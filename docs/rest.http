@@ -5,3 +5,8 @@ POST  http://localhost:3000/campaigns
     "Content": "change password",
 	"emails":  ["teste@teste.com.br"]
 }
+
+###
+
+GET http://localhost:3000/campaigns/555
+
