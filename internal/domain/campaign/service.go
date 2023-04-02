@@ -40,11 +40,10 @@ func (s *ServiceImp) GetBy(id string) (*contract.CampaignResponse, error) {
 	}
 
 	return &contract.CampaignResponse{
-		ID:          campaign.ID,
-		Name:        campaign.Name,
-		Content:     campaign.Content,
-		Status:      campaign.Status,
-		AmountEmail: len(campaign.Contacts),
+		ID:      campaign.ID,
+		Name:    campaign.Name,
+		Content: campaign.Content,
+		Status:  campaign.Status,
 	}, nil
 }
 
