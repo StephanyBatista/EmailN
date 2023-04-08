@@ -2,7 +2,7 @@ package endpoints
 
 import (
 	"emailn/internal/contract"
-	internalmock "emailn/internal/test/mock"
+	internalmock "emailn/internal/test/internal-mock"
 	"errors"
 	"net/http"
 	"net/http/httptest"
