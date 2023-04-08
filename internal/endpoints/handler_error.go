@@ -24,6 +24,11 @@ func HandlerError(endpointFunc EndpointFunc) http.HandlerFunc {
 			return
 		}
 		render.Status(r, status)
+
+		if status == http.StatusNotFound {
+			render.JSON(w, r, map[string]string{"error": "resource not found"})
+		}
+
 		if obj != nil {
 			render.JSON(w, r, obj)
 		}

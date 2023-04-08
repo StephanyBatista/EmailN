@@ -39,6 +39,10 @@ func (s *ServiceImp) GetBy(id string) (*contract.CampaignResponse, error) {
 		return nil, internalerrors.ErrInternal
 	}
 
+	if campaign == nil {
+		return nil, nil
+	}
+
 	return &contract.CampaignResponse{
 		ID:                   campaign.ID,
 		Name:                 campaign.Name,
