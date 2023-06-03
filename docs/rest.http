@@ -1,9 +1,14 @@
-GET http://localhost:3000/ping
+@url = http://localhost:3000
+@identity_provider = http://localhost:8080
 
 ###
 
-POST  http://localhost:3000/campaigns
-Authorization: Bearer {{token.response.body.access_token}}
+GET {{url}}/ping
+
+###
+# @name campaign_create
+POST  {{url}}/campaigns
+Authorization: Bearer {{access_token}}
 
 {
     "Name": "change",
@@ -12,26 +17,33 @@ Authorization: Bearer {{token.response.body.access_token}}
 }
 
 ###
-
-GET http://localhost:3000/campaigns/cgomb2mgualj7v56gb7g
-Authorization: Bearer {{token.response.body.access_token}}
+@campaign_id = {{campaign_create.response.body.id}}
 
 ###
 
-PATCH http://localhost:3000/campaigns/cancel/cghnsnuguall070lv0m0
-Authorization: Bearer {{token.response.body.access_token}}
+GET {{url}}/campaigns/{{campaign_id}}
+Authorization: Bearer {{access_token}}
 
 ###
 
-DELETE http://localhost:3000/campaigns/delete/cgkqh16guall0e775op0
-Authorization: Bearer {{token.response.body.access_token}}
+PATCH {{url}}/campaigns/cancel/{{campaign_id}}
+Authorization: Bearer {{access_token}}
+
+###
+
+DELETE {{url}}/campaigns/delete/{{campaign_id}}
+Authorization: Bearer {{access_token}}
 
 ###
 # @name token
-POST http://localhost:8080/realms/provider/protocol/openid-connect/token
+POST {{identity_provider}}/realms/provider/protocol/openid-connect/token
 Content-Type: application/x-www-form-urlencoded
 
 client_id=emailn&username=salmeidabatista@gmail.com&password=123456&grant_type=password
+
+###
+@access_token = {{token.response.body.access_token}}
+
 
 
 
