@@ -26,7 +26,6 @@ func Auth(next http.Handler) http.Handler {
 			return
 		}
 
-		//verifier := provider.Verifier(&oidc.Config{ClientID: "emailn"})
 		verifier := provider.Verifier(&oidc.Config{ClientID: "emailn"})
 		_, err = verifier.Verify(r.Context(), token)
 		if err != nil {
