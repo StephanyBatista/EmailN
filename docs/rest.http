@@ -26,11 +26,6 @@ Authorization: Bearer {{access_token}}
 
 ###
 
-PATCH {{url}}/campaigns/cancel/{{campaign_id}}
-Authorization: Bearer {{access_token}}
-
-###
-
 DELETE {{url}}/campaigns/delete/{{campaign_id}}
 Authorization: Bearer {{access_token}}
 
