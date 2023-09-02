@@ -14,6 +14,7 @@ type Service interface {
 
 type ServiceImp struct {
 	Repository Repository
+	SendMail   func(campaign *Campaign) error
 }
 
 func (s *ServiceImp) Create(newCampaign contract.NewCampaign) (string, error) {
@@ -63,6 +64,32 @@ func (s *ServiceImp) Delete(id string) error {
 
 	campaign.Delete()
 	err = s.Repository.Delete(campaign)
+	if err != nil {
+		return internalerrors.ErrInternal
+	}
+
+	return nil
+}
+
+func (s *ServiceImp) Start(id string) error {
+
+	campaignSaved, err := s.Repository.GetBy(id)
+
+	if err != nil {
+		return internalerrors.ProcessErrorToReturn(err)
+	}
+
+	if campaignSaved.Status != Pending {
+		return errors.New("Campaign status invalid")
+	}
+
+	err = s.SendMail(campaignSaved)
+	if err != nil {
+		return internalerrors.ErrInternal
+	}
+
+	campaignSaved.Done()
+	err = s.Repository.Update(campaignSaved)
 	if err != nil {
 		return internalerrors.ErrInternal
 	}
