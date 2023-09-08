@@ -13,7 +13,7 @@ Authorization: Bearer {{access_token}}
 {
     "Name": "change",
     "Content": "change password",
-	"emails":  ["henrique@teste.com.br", "henrique2@teste.com.br", "henrique@teste.com.br"]
+	"emails":  ["salmeidabatista@gmail.com", "henrique@teste.com.br", "henrique2@teste.com.br", "henrique@teste.com.br"]
 }
 
 ###
@@ -22,6 +22,11 @@ Authorization: Bearer {{access_token}}
 ###
 
 GET {{url}}/campaigns/{{campaign_id}}
+Authorization: Bearer {{access_token}}
+
+###
+
+PATCH {{url}}/campaigns/start/{{campaign_id}}
 Authorization: Bearer {{access_token}}
 
 ###
