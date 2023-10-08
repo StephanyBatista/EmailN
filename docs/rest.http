@@ -11,7 +11,7 @@ POST  {{url}}/campaigns
 Authorization: Bearer {{access_token}}
 
 {
-    "Name": "Hi!",
+    "Name": "Hi Henrique!",
     "Content": "Hello!",
 	"emails":  ["salmeidabatista@gmail.com", "henrique@teste.com.br", "henrique2@teste.com.br", "henrique@teste.com.br"]
 }

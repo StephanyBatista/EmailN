@@ -5,6 +5,7 @@ import (
 	"emailn/internal/infrastructure/database"
 	"emailn/internal/infrastructure/mail"
 	"log"
+	"time"
 
 	"github.com/joho/godotenv"
 )
@@ -23,16 +24,20 @@ func main() {
 		SendMail:   mail.SendMail,
 	}
 
-	campaigns, err := repository.GetCampaignsToBeSent()
+	for {
+		campaigns, err := repository.GetCampaignsToBeSent()
 
-	if err != nil {
-		println(err.Error())
-	}
+		if err != nil {
+			println(err.Error())
+		}
 
-	println("Amount of campaigns: ", len(campaigns))
+		println("Amount of campaigns: ", len(campaigns))
 
-	for _, campaign := range campaigns {
-		campaignService.SendEmailAndUpdateStatus(&campaign)
-		println("Campaign sent: ", campaign.ID)
+		for _, campaign := range campaigns {
+			campaignService.SendEmailAndUpdateStatus(&campaign)
+			println("Campaign sent: ", campaign.ID)
+		}
+
+		time.Sleep(10 * time.Second)
 	}
 }
