@@ -1,14 +1,14 @@
 package endpoints
 
 import (
-	"emailn/internal/contract"
+	"emailn/internal/domain/campaign"
 	"net/http"
 
 	"github.com/go-chi/render"
 )
 
 func (h *Handler) CampaignPost(w http.ResponseWriter, r *http.Request) (interface{}, int, error) {
-	var request contract.NewCampaign
+	var request campaign.NewCampaignRequest
 	render.DecodeJSON(r.Body, &request)
 	email := r.Context().Value("email").(string)
 	request.CreatedBy = email

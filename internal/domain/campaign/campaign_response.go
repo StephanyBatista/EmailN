@@ -1,4 +1,4 @@
-package contract
+package campaign
 
 type CampaignResponse struct {
 	ID                   string
