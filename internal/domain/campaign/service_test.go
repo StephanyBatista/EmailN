@@ -37,18 +37,16 @@ func setUpGetByIdRepositoryBy(campaign *campaign.Campaign) {
 	repositoryMock.On("GetBy", mock.Anything).Return(campaign, nil)
 }
 
-func setUpUpdateRepository() {
-	repositoryMock.On("Update", mock.Anything).Return(nil)
+func setUpUpdateRepository(err error) {
+	repositoryMock.On("Update", mock.Anything).Return(err)
 }
 
-func setUpSendEmailWithSuccess() {
+func setUpSendEmail(err error) {
 	sendMail := func(campaign *campaign.Campaign) error {
-		return nil
+		return err
 	}
 	service.SendMail = sendMail
 }
-
-//Method_Context_ReturnOrAction
 
 func Test_Create_RequestIsValid_IdIsNotNil(t *testing.T) {
 	setUp()
@@ -177,46 +175,39 @@ func Test_Start_CampaignIsNotPending_Err(t *testing.T) {
 	assert.Equal(t, "Campaign status invalid", err.Error())
 }
 
-func Test_Start_CampaignWasFound_SendEmail(t *testing.T) {
+func Test_Start_CampaignWasUpdated_StatusIsStarted(t *testing.T) {
 	setUp()
-	setUpUpdateRepository()
-	setUpGetByIdRepositoryBy(campaignPending)
-	emailWasSent := false
-	sendMail := func(campaign *campaign.Campaign) error {
-		if campaign.ID == campaignPending.ID {
-			emailWasSent = true
-		}
-		return nil
-	}
-	service.SendMail = sendMail
-
-	service.Start(campaignPending.ID)
-
-	assert.True(t, emailWasSent)
-}
-
-func Test_Start_SendEmailFailed_ErrInternal(t *testing.T) {
-	setUp()
-	setUpGetByIdRepositoryBy(campaignPending)
-	sendMail := func(campaign *campaign.Campaign) error {
-		return errors.New("error to send mail")
-	}
-	service.SendMail = sendMail
-
-	err := service.Start(campaignPending.ID)
-
-	assert.Equal(t, internalerrors.ErrInternal.Error(), err.Error())
-}
-
-func Test_Start_CampaignWasUpdated_StatusIsDone(t *testing.T) {
-	setUp()
-	setUpSendEmailWithSuccess()
+	setUpSendEmail(nil)
 	setUpGetByIdRepositoryBy(campaignPending)
 	repositoryMock.On("Update", mock.MatchedBy(func(campaignToUpdate *campaign.Campaign) bool {
-		return campaignPending.ID == campaignToUpdate.ID && campaignToUpdate.Status == campaign.Done
+		return campaignPending.ID == campaignToUpdate.ID && campaignToUpdate.Status == campaign.Started
 	})).Return(nil)
 
 	service.Start(campaignPending.ID)
 
-	assert.Equal(t, campaign.Done, campaignPending.Status)
+	assert.Equal(t, campaign.Started, campaignPending.Status)
+}
+
+func Test_SendEmailAndUpdateStatus_WhenFail_StatusIsFail(t *testing.T) {
+	setUp()
+	setUpSendEmail(errors.New("error to send email"))
+	repositoryMock.On("Update", mock.MatchedBy(func(campaignToUpdate *campaign.Campaign) bool {
+		return campaignPending.ID == campaignToUpdate.ID && campaignToUpdate.Status == campaign.Fail
+	})).Return(nil)
+
+	service.SendEmailAndUpdateStatus(campaignPending)
+
+	repositoryMock.AssertExpectations(t)
+}
+
+func Test_SendEmailAndUpdateStatus_WhenSuccess_StatusIsDone(t *testing.T) {
+	setUp()
+	setUpSendEmail(nil)
+	repositoryMock.On("Update", mock.MatchedBy(func(campaignToUpdate *campaign.Campaign) bool {
+		return campaignPending.ID == campaignToUpdate.ID && campaignToUpdate.Status == campaign.Done
+	})).Return(nil)
+
+	service.SendEmailAndUpdateStatus(campaignPending)
+
+	repositoryMock.AssertExpectations(t)
 }
