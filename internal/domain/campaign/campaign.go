@@ -33,31 +33,26 @@ type Campaign struct {
 	CreatedBy string    `validate:"email" gorm:"size:50;not null"`
 }
 
-// TODO: make unit test
 func (c *Campaign) Done() {
 	c.Status = Done
 	c.UpdatedOn = time.Now()
 }
 
-// TODO: make unit test
 func (c *Campaign) Cancel() {
 	c.Status = Canceled
 	c.UpdatedOn = time.Now()
 }
 
-// TODO: make unit test
 func (c *Campaign) Delete() {
 	c.Status = Deleted
 	c.UpdatedOn = time.Now()
 }
 
-// TODO: make unit test
 func (c *Campaign) Fail() {
 	c.Status = Fail
 	c.UpdatedOn = time.Now()
 }
 
-// TODO: make unit test
 func (c *Campaign) Started() {
 	c.Status = Started
 	c.UpdatedOn = time.Now()
